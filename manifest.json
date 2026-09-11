@@ -1,0 +1,91 @@
+{
+  "manifest_version": "0.4",
+  "name": "vyfakturuj",
+  "display_name": "Vyfakturuj.cz",
+  "version": "0.1.0",
+  "description": "Fakturace přes API Vyfakturuj.cz — doklady, kontakty, šablony a nastavení účtu.",
+  "long_description": "Připojí Claude k fakturačnímu API Vyfakturuj.cz (v2). Umí vyhledávat a vystavovat doklady, spravovat adresář kontaktů, šablony pravidelných faktur a číst nastavení účtu (číselné řady, platební metody, štítky). Pole objektů si Claude vyžádá z přibalené OpenAPI specifikace, takže má k dispozici všechna pole faktury. Odeslání dokladu e-mailem je ve výchozím stavu jen náhled — skutečné odeslání vyžaduje výslovné potvrzení parametrem test=false.",
+  "author": {
+    "name": "Martin Kokeš"
+  },
+  "license": "MIT",
+  "keywords": ["fakturace", "invoicing", "vyfakturuj", "ucetnictvi", "czech"],
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js"],
+      "env": {
+        "VYFAKTURUJ_EMAIL": "${user_config.email}",
+        "VYFAKTURUJ_API_KEY": "${user_config.api_key}",
+        "VYFAKTURUJ_READ_ONLY": "${user_config.read_only}",
+        "VYFAKTURUJ_TIMEOUT_MS": "${user_config.timeout_ms}"
+      }
+    }
+  },
+  "user_config": {
+    "email": {
+      "type": "string",
+      "title": "E-mail účtu",
+      "description": "E-mail, kterým se přihlašuješ do Vyfakturuj.cz (slouží jako uživatelské jméno API).",
+      "required": true
+    },
+    "api_key": {
+      "type": "string",
+      "title": "API klíč",
+      "description": "API klíč z Vyfakturuj.cz → Nastavení → API. Uloží se do systémové klíčenky.",
+      "required": true,
+      "sensitive": true
+    },
+    "read_only": {
+      "type": "boolean",
+      "title": "Jen pro čtení",
+      "description": "Zapnuto = Claude může doklady jen číst a vyhledávat. Vypnuto = může i vystavovat, upravovat, mazat a odesílat doklady.",
+      "required": false,
+      "default": false
+    },
+    "timeout_ms": {
+      "type": "number",
+      "title": "Timeout požadavku (ms)",
+      "description": "Jak dlouho čekat na odpověď API.",
+      "required": false,
+      "default": 30000,
+      "min": 1000,
+      "max": 120000
+    }
+  },
+  "tools": [
+    { "name": "describe_schema", "description": "Úplné schéma objektu API (pole, typy, povolené hodnoty)" },
+    { "name": "api_info", "description": "Verze API a přehled dostupných operací" },
+    { "name": "list_invoices", "description": "Vyhledání dokladů" },
+    { "name": "get_invoice", "description": "Detail dokladu včetně položek a odkazu na PDF" },
+    { "name": "list_contacts", "description": "Vyhledání kontaktů v adresáři" },
+    { "name": "get_contact", "description": "Detail kontaktu" },
+    { "name": "get_template", "description": "Detail šablony / pravidelné faktury" },
+    { "name": "list_payment_methods", "description": "Seznam platebních metod" },
+    { "name": "list_number_series", "description": "Seznam číselných řad" },
+    { "name": "list_tags", "description": "Seznam štítků" },
+    { "name": "get_tag", "description": "Detail štítku" },
+    { "name": "create_invoice", "description": "Vystavení nového dokladu" },
+    { "name": "update_invoice", "description": "Editace dokladu" },
+    { "name": "delete_invoice", "description": "Smazání dokladu" },
+    { "name": "send_invoice_mail", "description": "Odeslání dokladu e-mailem (výchozí je jen náhled)" },
+    { "name": "mark_invoice_paid", "description": "Označení dokladu jako uhrazeného" },
+    { "name": "create_contact", "description": "Vytvoření kontaktu" },
+    { "name": "update_contact", "description": "Editace kontaktu" },
+    { "name": "delete_contact", "description": "Smazání kontaktu" },
+    { "name": "create_template", "description": "Vytvoření šablony / pravidelné faktury" },
+    { "name": "update_template", "description": "Editace šablony / pravidelné faktury" },
+    { "name": "delete_template", "description": "Smazání šablony / pravidelné faktury" },
+    { "name": "create_tag", "description": "Vytvoření štítku" },
+    { "name": "update_tag", "description": "Editace štítku" },
+    { "name": "delete_tag", "description": "Smazání štítku" }
+  ],
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  }
+}

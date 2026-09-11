@@ -1,0 +1,36 @@
+{
+  "name": "vyfakturuj-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for the Vyfakturuj.cz invoicing API (v2)",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "vyfakturuj-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "openapi",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "update-spec": "node scripts/update-spec.mjs",
+    "prepublishOnly": "npm run build",
+    "bundle": "node scripts/bundle.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.6.1"
+  },
+  "devDependencies": {
+    "@anthropic-ai/mcpb": "^2.1.2",
+    "@types/node": "^24.13.4",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.9.3"
+  }
+}
